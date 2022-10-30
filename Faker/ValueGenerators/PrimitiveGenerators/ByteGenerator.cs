@@ -4,18 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Faker.Core.ValueGenerators
+namespace Faker.Core.ValueGenerators.PrimitiveGenerators
 {
-	internal class ValueGenerator : IValueGenerator
+	public class ByteGenerator : IValueGenerator
 	{
 		public bool CanGenerate( Type type )
 		{
-			throw new NotImplementedException();
+			return type == typeof( byte );
 		}
 
 		public object Generate( Type typeToGenerate, GeneratorContext context )
 		{
-			throw new NotImplementedException();
+			return (byte)context.Random.Next(0, 256 );
 		}
 	}
 }

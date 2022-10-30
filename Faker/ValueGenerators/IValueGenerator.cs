@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Faker.Core.ValueGenerators
 {
-	internal interface IValueGenerator
+	public interface IValueGenerator
 	{
-	}
+        object Generate( Type typeToGenerate, GeneratorContext context );
+        
+        bool CanGenerate( Type type );
+    }
 }
