@@ -11,7 +11,7 @@ namespace Tests
 		public FamilyPerson( int age, string name ) : base( age, name )
 		{}
 
-		public FamilyPerson[] Children { get; set; }
+		public FamilyPerson Father { get; set; }
 
 	}
 }

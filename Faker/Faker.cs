@@ -8,7 +8,9 @@ namespace Faker.Core
 		private GeneratorContext _context;
 		private List<IValueGenerator> _generators;
 
-		public int RecursiveLevel { get; set; } = 3;
+		public int RecursiveLimit { get; } = 3;
+
+		private Dictionary<Type, int> _currentRecursiveLevels = new Dictionary<Type, int>();
 		
 
 		public Faker ()
@@ -16,6 +18,34 @@ namespace Faker.Core
 			_generators = Load();
 			_context = new GeneratorContext( new Random(), this );			
 		}
+
+		public Faker(int maxRecursiveLevel)
+		{
+			RecursiveLimit = maxRecursiveLevel;
+			_generators = Load();
+			_context = new GeneratorContext( new Random(), this );
+		}
+
+		private bool IsOverRecursiveLimit(Type t)
+		{
+			return (_currentRecursiveLevels.ContainsKey(t) && _currentRecursiveLevels[t] > RecursiveLimit);
+		}
+
+		private void IncrementCurrentRecursiveLevel(Type t)
+		{
+			if ( _currentRecursiveLevels.ContainsKey( t ) )
+				++_currentRecursiveLevels[ t ];			
+			else
+				_currentRecursiveLevels.Add( t, 1 );
+		}
+
+		private void DecrementCurrentRecursiveLevels(Type t)
+		{			
+			--_currentRecursiveLevels[ t ];
+			if ( _currentRecursiveLevels[ t ] == 0 )
+				_currentRecursiveLevels.Remove( t );
+		}
+
 
 		public T Create<T>()
 		{
@@ -25,15 +55,18 @@ namespace Faker.Core
 		public object Create( Type t )
 		{
 			object? o = null;
+			if ( IsOverRecursiveLimit( t ) )
+				return o;
+
+			IncrementCurrentRecursiveLevel( t );
 			var generator = ChooseGenerator( t );
 			if ( generator != null )
 				o = generator.Generate( t, _context );
 			else
 			{
 	
-
 				var constructors = t.GetConstructors().ToList()
-			.OrderByDescending( c => c.GetParameters().Length ).ToList(); 
+					.OrderByDescending( c => c.GetParameters().Length ).ToList(); 
 			
 				foreach ( var constructor in constructors )
 				{
@@ -60,8 +93,8 @@ namespace Faker.Core
 				if ( o != null )
 					FillFieldsAndProperties( t, o );
 			}
-			
 
+			DecrementCurrentRecursiveLevels( t );
 
 			return o;
 		}

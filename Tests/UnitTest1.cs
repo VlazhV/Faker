@@ -2,6 +2,7 @@ using Faker.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Tests
 {
@@ -76,10 +77,10 @@ namespace Tests
 			Assert.IsTrue( datetime.GetType() == typeof( DateTime ) );
 			
 			foreach (var field in datetime.GetType().GetFields() )
-				Assert.IsNotNull(field);
+				Assert.IsNotNull(field.GetValue( datetime ) );
 
 			foreach ( var prop in datetime.GetType().GetProperties() )
-				Assert.IsNotNull( prop );
+				Assert.IsNotNull( prop.GetValue( datetime ) );
 		}
 
 		[TestMethod]
@@ -127,20 +128,49 @@ namespace Tests
 			Assert.IsTrue(person.GetType() == typeof( Person ) );
 
 			foreach ( var field in person.GetType().GetFields() )
-				Assert.IsNotNull( field );
+				Assert.IsNotNull( field.GetValue( person ) );
 
 			foreach ( var prop in person.GetType().GetProperties() )
-				Assert.IsNotNull( prop );
+				Assert.IsNotNull( prop.GetValue( person ) );
 
 		}
 
 		[TestMethod]
 		public void GenerateObjectWithRecursive()
 		{
+			int recLimit = 2;
+			var faker = new Faker.Core.Faker( recLimit );
 
+			var familyPerson = faker.Create<FamilyPerson>();
+			Assert.IsNotNull( familyPerson );
+			Assert.IsTrue( familyPerson.GetType() == typeof( FamilyPerson ) );
+			
+			foreach ( var field in familyPerson.GetType().GetFields() )			
+				Assert.IsNotNull( field.GetValue(familyPerson) );
+
+			foreach ( var prop in familyPerson.GetType().GetProperties() )
+				Assert.IsNotNull( prop.GetValue( familyPerson ) );
+
+			CheckRecursiveFillProps( recLimit, familyPerson );
 		}
 
+		private void CheckRecursiveFillProps(int currRecLevel, FamilyPerson familyPerson)
+		{
+			if (currRecLevel < 0)
+				return;
 
+			var fatherProp = familyPerson.GetType().GetProperties()
+				.Where( p => p.PropertyType.Equals( typeof( FamilyPerson ) ) )
+				.ToArray().First();
+
+			if ( currRecLevel == 0 )
+				Assert.IsNull( fatherProp.GetValue(familyPerson) );
+			else
+			{
+				Assert.IsNotNull( fatherProp.GetValue( familyPerson ) );
+				CheckRecursiveFillProps( --currRecLevel, (FamilyPerson)fatherProp.GetValue( familyPerson ) );
+			}
+		}
 
 	}
 }
