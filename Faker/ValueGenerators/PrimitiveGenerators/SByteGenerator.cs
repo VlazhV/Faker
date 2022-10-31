@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace Faker.Core.ValueGenerators.PrimitiveGenerators
 {
-	internal class SByteGenerator
+	public class SByteGenerator : IValueGenerator
 	{
+		public bool CanGenerate( Type type )
+		{
+			return type == typeof( sbyte );
+		}
+
+		public object Generate( Type typeToGenerate, GeneratorContext context )
+		{
+			return context.Random.Next( sbyte.MinValue, sbyte.MaxValue );
+		}
 	}
 }

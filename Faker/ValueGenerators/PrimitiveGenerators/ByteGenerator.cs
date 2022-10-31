@@ -15,7 +15,7 @@ namespace Faker.Core.ValueGenerators.PrimitiveGenerators
 
 		public object Generate( Type typeToGenerate, GeneratorContext context )
 		{
-			return (byte)context.Random.Next(0, 256 );
+			return context.Random.Next( byte.MinValue, byte.MaxValue );
 		}
 	}
 }

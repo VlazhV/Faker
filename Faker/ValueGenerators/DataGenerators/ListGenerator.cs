@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Faker.Core.ValueGenerators
+namespace Faker.Core.ValueGenerators.DataGenerators
 {
-	internal class ValueGenerator : IValueGenerator
+	public class ListGenerator : IValueGenerator
 	{
 		public bool CanGenerate( Type type )
 		{

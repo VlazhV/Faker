@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace Faker.Core.ValueGenerators.PrimitiveGenerators
 {
-	internal class CharGenerator
+	public class CharGenerator : IValueGenerator
 	{
+		public bool CanGenerate( Type type )
+		{
+			return type == typeof( char );
+		}
+
+		public object Generate( Type typeToGenerate, GeneratorContext context )
+		{
+			return context.Random.Next( char.MinValue, char.MaxValue );
+		}
 	}
 }
