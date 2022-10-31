@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Faker.Core.ValueGenerators.PrimitiveGenerators
 {
 	public class UShortGenerator : IValueGenerator
@@ -15,7 +10,7 @@ namespace Faker.Core.ValueGenerators.PrimitiveGenerators
 
 		public object Generate( Type typeToGenerate, GeneratorContext context )
 		{
-			return context.Random.Next( ushort.MinValue, ushort.MaxValue );
+			return (ushort)(context.Random.Next( ushort.MinValue, ushort.MaxValue ));
 		}
 	}
 }

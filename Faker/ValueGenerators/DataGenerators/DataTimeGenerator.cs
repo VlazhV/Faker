@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Faker.Core.ValueGenerators.DataGenerators
+﻿namespace Faker.Core.ValueGenerators.DataGenerators
 {
-	class DataTimeGenerator : IValueGenerator
+	public class DataTimeGenerator : IValueGenerator
 	{
 		public bool CanGenerate( Type type )
 		{
